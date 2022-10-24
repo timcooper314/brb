@@ -3,6 +3,7 @@ from aws_cdk import (
     Stack,
     aws_dynamodb as dynamodb,
     aws_lambda as _lambda,
+    aws_apigateway as apigateway,
 )
 from constructs import Construct
 
@@ -63,3 +64,17 @@ class BrbBrewsStack(Stack):
             timeout=Duration.seconds(10),
         )
         brew_recipes_table.grant_write_data(create_brew_function)
+
+        brews_api = apigateway.LambdaRestApi(
+            self,
+            "BrewsRestAPI",
+            handler=list_brews_function,
+        )
+        brews = brews_api.root.add_resource("brews")
+        brews.add_method("GET")  # GET /brews
+        create_brew_integration = apigateway.LambdaIntegration(create_brew_function)
+        brews.add_method("POST", create_brew_integration)  # POST /brews
+
+        brew = brews.add_resource("{brew}")
+        brew.add_method("GET", apigateway.LambdaIntegration(get_brew_function))  # GET /brews/{brew}
+        brew.add_method("POST", create_brew_integration)  # POST /brews/{brew}
