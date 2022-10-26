@@ -1,28 +1,18 @@
 from aws_cdk import (
     Duration,
     Stack,
-    aws_dynamodb as dynamodb,
     aws_lambda as _lambda,
     aws_apigateway as apigateway,
 )
 from constructs import Construct
 
 
-class BrbBrewsStack(Stack):
-
-    def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
+class BrbBrewsApiStack(Stack):
+    def __init__(
+        self, scope: Construct, construct_id: str, brew_recipes_table, **kwargs
+    ) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
-        brew_recipes_table = dynamodb.Table(
-            self,
-            "BrewRecipesTable",
-            table_name="BRBBrewRecipes",
-            partition_key=dynamodb.Attribute(
-                name="brewId", type=dynamodb.AttributeType.STRING
-            ),
-        )
-
-        # API Lambdas:
         list_brews_function = _lambda.Function(
             self,
             "ListBrewsFunction",
@@ -76,5 +66,7 @@ class BrbBrewsStack(Stack):
         brews.add_method("POST", create_brew_integration)  # POST /brews
 
         brew = brews.add_resource("{brew}")
-        brew.add_method("GET", apigateway.LambdaIntegration(get_brew_function))  # GET /brews/{brew}
+        brew.add_method(
+            "GET", apigateway.LambdaIntegration(get_brew_function)
+        )  # GET /brews/{brew}
         brew.add_method("POST", create_brew_integration)  # POST /brews/{brew}
