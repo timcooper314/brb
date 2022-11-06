@@ -3,6 +3,7 @@ import os
 import aws_cdk as cdk
 from brb_brews.brb_brews_storage_stack import BrbBrewsStorageStack
 from brb_brews.brb_brews_api_stack import BrbBrewsApiStack
+from brb_brews.brb_brews_frontend_stack import BrbBrewsFrontendStack
 
 
 app = cdk.App()
@@ -18,6 +19,11 @@ api = BrbBrewsApiStack(
     "BrbBrewsApiStack",
     env=cdk_env,
     brew_recipes_table=storage.brew_recipes_table,
+)
+frontend = BrbBrewsFrontendStack(
+    app,
+    "BrbBrewsFrontendStack",
+    env=cdk_env,
 )
 
 app.synth()
