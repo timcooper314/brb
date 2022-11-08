@@ -24,6 +24,11 @@ def lambda_handler(event, context):
     brew = put_dynamodb_item(new_brew)
     return {
         "statusCode": 200,
-        "headers": {"Content-Type": "application/json"},
+        "headers": {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Headers": "Content-Type",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "*",
+        },
         "body": json.dumps({"New brew": new_brew}),
     }

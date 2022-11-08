@@ -59,6 +59,10 @@ class BrbBrewsApiStack(Stack):
             self,
             "BrewsRestAPI",
             handler=list_brews_function,
+            default_cors_preflight_options=apigateway.CorsOptions(
+                allow_origins=apigateway.Cors.ALL_ORIGINS,
+                allow_headers=apigateway.Cors.ALL_ORIGINS,
+            ),
         )
         brews = brews_api.root.add_resource("brews")
         brews.add_method("GET")  # GET /brews
@@ -69,4 +73,3 @@ class BrbBrewsApiStack(Stack):
         brew.add_method(
             "GET", apigateway.LambdaIntegration(get_brew_function)
         )  # GET /brews/{brew}
-        brew.add_method("POST", create_brew_integration)  # POST /brews/{brew}
