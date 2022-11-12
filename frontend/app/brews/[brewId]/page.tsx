@@ -1,4 +1,6 @@
+
 import styles from '../Brews.module.css';
+import DeleteBrew from './DeleteBrew';
 
 
 // can also prerender all brews using generateStaticParmas
@@ -16,6 +18,7 @@ async function getBrew(brewId: string) {
 
 
 export default async function BrewPage({ params }: any) {
+    console.log(`here are the ${params}`)
     const brew = await getBrew(params.brewId);
     return (
         <div>
@@ -25,6 +28,7 @@ export default async function BrewPage({ params }: any) {
                 <h3>{brew.grain}</h3>
                 <h3>{brew.yeast}</h3>
             </div>
-        </div>
+            <DeleteBrew brewId={params.brewId} />
+        </div >
     );
 }
