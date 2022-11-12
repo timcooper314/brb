@@ -55,6 +55,20 @@ class BrbBrewsApiStack(Stack):
         )
         brew_recipes_table.grant_write_data(create_brew_function)
 
+        delete_brew_function = _lambda.Function(
+            self,
+            "DeleteBrewFunction",
+            function_name="brb-delete-brew",
+            runtime=_lambda.Runtime.PYTHON_3_9,
+            handler="delete_brew.lambda_handler",
+            code=_lambda.Code.from_asset("./src/"),
+            environment=dict(
+                BREW_RECIPES_TABLE_NAME=brew_recipes_table.table_name,
+            ),
+            timeout=Duration.seconds(10),
+        )
+        brew_recipes_table.grant_write_data(delete_brew_function)
+        
         brews_api = apigateway.LambdaRestApi(
             self,
             "BrewsRestAPI",
@@ -73,3 +87,6 @@ class BrbBrewsApiStack(Stack):
         brew.add_method(
             "GET", apigateway.LambdaIntegration(get_brew_function)
         )  # GET /brews/{brew}
+        brew.add_method(
+            "DELETE", apigateway.LambdaIntegration(delete_brew_function)
+        )  # DELETE /brews/{brew}
