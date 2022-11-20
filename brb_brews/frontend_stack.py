@@ -11,7 +11,8 @@ class BrbBrewsFrontendStack(Stack):
         super().__init__(scope, construct_id, **kwargs)
 
         site_bucket = s3.Bucket(
-            self, "FrontendBucket",
+            self,
+            "FrontendBucket",
             bucket_name="brb-brews-frontend",
             website_index_document="index.html",
             # block_public_access=s3.BlockPublicAccess.
@@ -21,6 +22,6 @@ class BrbBrewsFrontendStack(Stack):
                 effect=iam.Effect.ALLOW,
                 actions=["s3:GetObject"],
                 resources=[f"{site_bucket.bucket_arn}/*"],
-                principals=[iam.AnyPrincipal()]
+                principals=[iam.AnyPrincipal()],
             )
         )

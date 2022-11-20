@@ -13,6 +13,12 @@ class BrbBrewsApiStack(Stack):
     ) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
+        powertools_lambda_layer = _lambda.LayerVersion.from_layer_version_arn(
+            self,
+            "PowerToolsLambdaLayer",
+            layer_version_arn="arn:aws:lambda:ap-southeast-2:017000801446:layer:AWSLambdaPowertoolsPythonV2:14",
+        )
+
         list_brews_function = _lambda.Function(
             self,
             "ListBrewsFunction",
@@ -52,6 +58,7 @@ class BrbBrewsApiStack(Stack):
                 BREW_RECIPES_TABLE_NAME=brew_recipes_table.table_name,
             ),
             timeout=Duration.seconds(10),
+            layers=[powertools_lambda_layer],
         )
         brew_recipes_table.grant_write_data(create_brew_function)
 
@@ -68,7 +75,7 @@ class BrbBrewsApiStack(Stack):
             timeout=Duration.seconds(10),
         )
         brew_recipes_table.grant_write_data(delete_brew_function)
-        
+
         brews_api = apigateway.LambdaRestApi(
             self,
             "BrewsRestAPI",
