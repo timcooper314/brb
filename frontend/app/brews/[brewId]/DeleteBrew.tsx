@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Router from 'next/router';
-// import { NextResponse, NextRequest } from 'next/server'
+import styles from '../Brews.module.css';
 
 export default function DeleteBrew(params: any) {
     // const [isDeleted, setIsDeleted] = useState(false);
@@ -21,11 +21,11 @@ export default function DeleteBrew(params: any) {
         });
         // setIsDeleted(true);
         router.refresh();
-        router.push("brews/")
+        router.push("/brews/")
 
     };
     return (
-        <button onClick={deleteBrew}>
+        <button className={styles.deletebutton} onClick={deleteBrew}>
             Delete Brew
         </button>
     );

@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import styles from './Brews.module.css'
-import CreateBrew from './CreateBrew';
 
 
 async function getBrews() {
@@ -21,8 +20,11 @@ export default async function BrewsPage() {
                     return <Brew key={brew.brewId} brew={brew} />;
                 })}
             </div>
-
-            <CreateBrew />
+            <Link href={`/brews/create`}>
+                <button href="brews/create">
+                    Pour Fresh Brew
+                </button>
+            </Link>
         </div>
     );
 }

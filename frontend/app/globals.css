@@ -4,10 +4,12 @@
 
 html,
 body {
+    background-color: black;
     padding: 0;
     margin: 0;
-    font-family: "Fira Sans";
+    font-family: "Emy Slab Bold, Fira Sans";
     padding: 0 2rem;
+    color: white;
 }
 
 h1 {
@@ -19,6 +21,7 @@ h1 {
     margin-inline-start: 0px;
     margin-inline-end: 0px;
     font-weight: bold;
+    color: #0081CF;
 }
 
 a {
@@ -64,4 +67,20 @@ nav a {
 form,
 input {
     width: 100%;
+}
+
+.logo-image {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-top: -6px;
+}
+
+h5 {
+    color: white;
+}
+
+p {
+    color: white;
 }
