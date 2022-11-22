@@ -25,7 +25,7 @@ class BrbBrewsApiStack(Stack):
             function_name=f"brb-list-brews",
             runtime=_lambda.Runtime.PYTHON_3_9,
             handler="list_brews.lambda_handler",
-            code=_lambda.Code.from_asset("./src/"),
+            code=_lambda.Code.from_asset("./src/brews/"),
             environment=dict(
                 BREW_RECIPES_TABLE_NAME=brew_recipes_table.table_name,
             ),
@@ -39,7 +39,7 @@ class BrbBrewsApiStack(Stack):
             function_name=f"brb-get-brew",
             runtime=_lambda.Runtime.PYTHON_3_9,
             handler="get_brew.lambda_handler",
-            code=_lambda.Code.from_asset("./src/"),
+            code=_lambda.Code.from_asset("./src/brews/"),
             environment=dict(
                 BREW_RECIPES_TABLE_NAME=brew_recipes_table.table_name,
             ),
@@ -53,7 +53,7 @@ class BrbBrewsApiStack(Stack):
             function_name=f"brb-create-brew",
             runtime=_lambda.Runtime.PYTHON_3_9,
             handler="create_brew.lambda_handler",
-            code=_lambda.Code.from_asset("./src/"),
+            code=_lambda.Code.from_asset("./src/brews/"),
             environment=dict(
                 BREW_RECIPES_TABLE_NAME=brew_recipes_table.table_name,
             ),
@@ -68,7 +68,7 @@ class BrbBrewsApiStack(Stack):
             function_name="brb-delete-brew",
             runtime=_lambda.Runtime.PYTHON_3_9,
             handler="delete_brew.lambda_handler",
-            code=_lambda.Code.from_asset("./src/"),
+            code=_lambda.Code.from_asset("./src/brews/"),
             environment=dict(
                 BREW_RECIPES_TABLE_NAME=brew_recipes_table.table_name,
             ),
