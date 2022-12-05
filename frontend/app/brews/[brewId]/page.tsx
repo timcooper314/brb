@@ -1,13 +1,13 @@
-
 import styles from '../Brews.module.css';
 import DeleteBrew from './DeleteBrew';
+import apiEndpoints from '../../../apiConfig.json' assert {type: 'json'}
 
 
 // can also prerender all brews using generateStaticParmas
 async function getBrew(brewId: string) {
-    //console.log(`Fetching brew ${brewId}`)
+    console.log(`Fetching brew ${brewId}`)
     const res = await fetch(
-        `https://md1o52y8qj.execute-api.ap-southeast-2.amazonaws.com/prod/brews/${brewId}`,
+        `${apiEndpoints.brews}/${brewId}`,
         {
             next: { revalidate: 60 },
         }

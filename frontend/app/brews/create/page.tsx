@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import apiEndpoints from '../../../apiConfig.json' assert {type: 'json'}
 
 export default function CreateBrew() {
     const [name, setName] = useState('');
@@ -19,7 +20,7 @@ export default function CreateBrew() {
             yeast,
         };
         console.log(newBrew);
-        await fetch(`https://md1o52y8qj.execute-api.ap-southeast-2.amazonaws.com/prod/brews`, {
+        await fetch(apiEndpoints.brews, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
