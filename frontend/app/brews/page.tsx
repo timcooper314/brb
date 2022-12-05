@@ -1,10 +1,11 @@
 import Link from 'next/link';
 import styles from './Brews.module.css'
+import apiEndpoints from '../../apiConfig.json' assert {type: 'json'}
 
 
 async function getBrews() {
     console.log('Fetching all brews...')
-    const res = await fetch('https://md1o52y8qj.execute-api.ap-southeast-2.amazonaws.com/prod/brews'); // can include cache: no-store option
+    const res = await fetch(apiEndpoints.brews); // can include cache: no-store option
     const data = await res.json();
     return data?.brews as any[];
 }
