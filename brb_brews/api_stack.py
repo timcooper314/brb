@@ -9,7 +9,7 @@ from constructs import Construct
 
 class BrbBrewsApiStack(Stack):
     def __init__(
-        self, scope: Construct, construct_id: str, brew_recipes_table, **kwargs
+        self, scope: Construct, construct_id: str, brew_recipes_table, inventory_table, **kwargs
     ) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
@@ -19,13 +19,14 @@ class BrbBrewsApiStack(Stack):
             layer_version_arn="arn:aws:lambda:ap-southeast-2:017000801446:layer:AWSLambdaPowertoolsPythonV2:14",
         )
 
+        # BREWS APIs
         list_brews_function = _lambda.Function(
             self,
             "ListBrewsFunction",
             function_name=f"brb-list-brews",
             runtime=_lambda.Runtime.PYTHON_3_9,
             handler="list_brews.lambda_handler",
-            code=_lambda.Code.from_asset("./src/"),
+            code=_lambda.Code.from_asset("./src/brews/"),
             environment=dict(
                 BREW_RECIPES_TABLE_NAME=brew_recipes_table.table_name,
             ),
@@ -39,7 +40,7 @@ class BrbBrewsApiStack(Stack):
             function_name=f"brb-get-brew",
             runtime=_lambda.Runtime.PYTHON_3_9,
             handler="get_brew.lambda_handler",
-            code=_lambda.Code.from_asset("./src/"),
+            code=_lambda.Code.from_asset("./src/brews/"),
             environment=dict(
                 BREW_RECIPES_TABLE_NAME=brew_recipes_table.table_name,
             ),
@@ -53,7 +54,7 @@ class BrbBrewsApiStack(Stack):
             function_name=f"brb-create-brew",
             runtime=_lambda.Runtime.PYTHON_3_9,
             handler="create_brew.lambda_handler",
-            code=_lambda.Code.from_asset("./src/"),
+            code=_lambda.Code.from_asset("./src/brews/"),
             environment=dict(
                 BREW_RECIPES_TABLE_NAME=brew_recipes_table.table_name,
             ),
@@ -68,7 +69,7 @@ class BrbBrewsApiStack(Stack):
             function_name="brb-delete-brew",
             runtime=_lambda.Runtime.PYTHON_3_9,
             handler="delete_brew.lambda_handler",
-            code=_lambda.Code.from_asset("./src/"),
+            code=_lambda.Code.from_asset("./src/brews/"),
             environment=dict(
                 BREW_RECIPES_TABLE_NAME=brew_recipes_table.table_name,
             ),
@@ -97,3 +98,39 @@ class BrbBrewsApiStack(Stack):
         brew.add_method(
             "DELETE", apigateway.LambdaIntegration(delete_brew_function)
         )  # DELETE /brews/{brew}
+
+        # INVENTORY APIs
+        list_inventory_function = _lambda.Function(
+            self,
+            "ListInventoryFunction",
+            function_name="brb-list-inventory",
+            runtime=_lambda.Runtime.PYTHON_3_9,
+            handler="list_inventory.lambda_handler",
+            code=_lambda.Code.from_asset("./src/inventory/"),
+            environment=dict(
+                INGREDIENTS_TABLE_NAME=inventory_table.table_name,
+            ),
+            timeout=Duration.seconds(10),
+        )
+        inventory_table.grant_read_data(list_inventory_function)
+
+        update_inventory_function = _lambda.Function(
+            self,
+            "UpdateInventoryFunction",
+            function_name=f"brb-update-inventory",
+            runtime=_lambda.Runtime.PYTHON_3_9,
+            handler="update_inventory.lambda_handler",
+            code=_lambda.Code.from_asset("./src/inventory/"),
+            environment=dict(
+                INGREDIENTS_TABLE_NAME=inventory_table.table_name,
+            ),
+            timeout=Duration.seconds(10),
+            layers=[powertools_lambda_layer],
+        )
+        inventory_table.grant_write_data(update_inventory_function)
+
+        inventory = brews_api.root.add_resource("inventory")
+        list_inventory_integration = apigateway.LambdaIntegration(list_inventory_function)
+        inventory.add_method("GET", list_inventory_integration)  # GET /inventory
+        update_inventory_integration = apigateway.LambdaIntegration(update_inventory_function)
+        inventory.add_method("POST", update_inventory_integration)  # POST /inventory

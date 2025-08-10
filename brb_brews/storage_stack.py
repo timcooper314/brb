@@ -17,3 +17,14 @@ class BrbBrewsStorageStack(Stack):
                 name="brewId", type=dynamodb.AttributeType.STRING
             ),
         )
+        self.ingredients_inventory_table = dynamodb.Table(
+            self,
+            "IngredientsInventoryTable",
+            table_name="BRBIngredientsInventory",
+            partition_key=dynamodb.Attribute(
+                name="ingredient", type=dynamodb.AttributeType.STRING
+            ),
+            sort_key=dynamodb.Attribute(
+                name="type", type=dynamodb.AttributeType.STRING
+            ),
+        )
